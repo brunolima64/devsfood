@@ -3,6 +3,7 @@
 import { Route, Routes } from "react-router-dom"
 import { HomeScreen } from '@/Pages/HomeScreen';
 import { IconItem } from "@/components/IconItem";
+import { Cart } from "@/components/Cart";
 
 export const Page = () => {
 	
@@ -16,6 +17,9 @@ export const Page = () => {
 		<Routes>
 			<Route path="/" element={<HomeScreen />}/>
 		</Routes>
+		<div>
+			<Cart />
+		</div>
 	</div>
   )
 }

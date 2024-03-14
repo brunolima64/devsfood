@@ -12,6 +12,10 @@ export const HomeScreen = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
 
+    const [activeCategorie, setActiveCategorie] = useState(0);
+    const [activeProducts, setActiveProducts] = useState(0);
+    
+
 	useEffect(()=>{
 		const cat = async () => {
 			const cat = await getCategories();
@@ -52,19 +56,38 @@ export const HomeScreen = () => {
             <div className='max-w-72 p-2 text-lg font-bold bg-red-800 text-white shadow-lg rounded-md'>
                 <p className='p-2 text-lg font-bold bg-red-700 text-white shadow-lg rounded-md'>selecione uma categoria:</p>
                 <div className='flex'>
-                    <CategoryItem url='assets/food-and-restaurant.png' />
+                    <div 
+                        className="w-16 flex mr-2 mt-3 border border-red-900 bg-red-200 rounded-md cursor-pointer hover:bg-red-300"
+                        onClick={()=>setActiveCategorie(0)}
+                    >
+                        <img className="w-full p-2" src="/assets/food-and-restaurant.png"  />
+                    </div>
                     {categories.map((item, index) => (
-                        <CategoryItem key={index} url={item.image} />
+                        <CategoryItem 
+                            key={index+1} 
+                            url={item.image} 
+                            data={item}
+                            setActive={setActiveCategorie}
+                        />
                     ))}
                 </div>
             </div>
+            
 
-            <div className='mt-4 p-4 bg-red-800 shadow-lg rounded-md'>
+            <div className='mt-4 p-4 bg-red-800 shadow-lg rounded-md'> 
+                {products &&
                 <div className='grid grid-cols-3 gap-4'>
                     {products.map(item => (
-                        <ProductsItems data={item} />
+                        <ProductsItems 
+                            data={item}
+                            activeCategorie={activeCategorie}
+                        />
                     ))}
                 </div>
+                }
+                {activeCategorie === 3 &&
+                    <p className="text-white text-md">items esgotados.</p>
+                }
             </div>
         </div>
     )
