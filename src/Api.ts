@@ -11,3 +11,10 @@ export const getProducts = async () => {
     const json = results.json();
 return json;
 }
+
+type Props = { itemId: number; }
+export const getProduct = async (itemId: Props) => {
+    const results = await fetch(BASE+'product/'+itemId);
+    const json = results.json();
+return json;
+}

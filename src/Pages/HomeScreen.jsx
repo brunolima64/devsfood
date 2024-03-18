@@ -3,18 +3,35 @@ import { useEffect, useState } from "react";
 
 import SearchIcon from '@mui/icons-material/Search';
 
-import { getCategories, getProducts } from "@/Api";
+import { getCategories, getProduct, getProducts } from "@/Api";
 
 import { CategoryItem } from '@/components/CategoryItem';
 import { ProductsItems } from '@/components/ProductsItems';
+import { ModalAddCart } from "@/components/ModalAddCart";
 
 export const HomeScreen = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
 
+    const [productModal, setProductModal] = useState(); //produto do modal
+
     const [activeCategorie, setActiveCategorie] = useState(0);
     const [activeProducts, setActiveProducts] = useState(0);
     
+    const [showModal, setShowModal] = useState(false);
+
+  
+    
+    const handleShowModal = async (itemId) => {
+    
+        const prodItem = await getProduct(itemId);
+        if (prodItem.error === '') {
+            setProductModal(prodItem.result);
+        }
+        setShowModal(!showModal);
+        setActiveProducts(prodItem.result)
+        console.log(prodItem);
+    };
 
 	useEffect(()=>{
 		const cat = async () => {
@@ -33,15 +50,16 @@ export const HomeScreen = () => {
 	}, [])
     
     return (
-        <div
-            className="h-screen flex-1 p-3 bg-center"
-            style={{backgroundImage: "url('assets/bg1.jpg')"}}
-        >
+        <div className="h-screen flex-1 p-3 bg-center" style={{backgroundImage: "url('assets/bg1.jpg')"}}>
+            {showModal &&
+                <ModalAddCart setOnModal={handleShowModal} prodModalProps={productModal}/>
+            }
+
             <div className="bg-red-800 p-3 mb-8 px-8 flex items-center justify-between rounded-md">
                 <img 
                     className="w-64 my-4 h-auto"
                     src="/assets/logo.png" 
-                />  
+                />
                 <div className="flex items-center bg-white rounded-xl p-1">
                     <SearchIcon className='text-xl mx-2 border-r border-gray-700'/>
                     <input 
@@ -73,14 +91,16 @@ export const HomeScreen = () => {
                 </div>
             </div>
             
-
             <div className='mt-4 p-4 bg-red-800 shadow-lg rounded-md'> 
                 {products &&
                 <div className='grid grid-cols-3 gap-4'>
-                    {products.map(item => (
+                    {products.map((item, index) => (
                         <ProductsItems 
+                            key={index+1} 
                             data={item}
                             activeCategorie={activeCategorie}
+                            onModal={showModal}
+                            setOnModal={()=>handleShowModal(item.id)}
                         />
                     ))}
                 </div>
